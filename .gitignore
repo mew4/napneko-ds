@@ -18,7 +18,7 @@ ENV/
 .DS_Store
 
 # 敏感信息
-#**/config.yaml
+**/config.yaml
 **/*quickLogin.bat
 **/*2579101693*
 代码上传指令.txt
