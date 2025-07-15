@@ -1,0 +1,3 @@
+group_id = ['']  # 生效的群id列表
+root_id = ''  # 管理员id
+Authorization = ""  # 填写"Bearer 你的key_id"
