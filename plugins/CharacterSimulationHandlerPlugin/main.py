@@ -16,23 +16,44 @@ class CharacterSimulationHandlerPlugin(BasePlugin):
 
     @bot.group_event()
     async def on_group_message(self, msg: GroupMessage):
-        if msg.group_id in self.group_uin:
-            print(f'[{msg.user_id}]'+msg.raw_message)
-            question = checklen(getText(self.chatHistory_group, "user", f'[{msg.user_id}]'+msg.raw_message))
-            output = get_answer(question, self.plugin_config)
-            getText(self.chatHistory_group, "assistant", output)
+        user_uin = self.root_id
+        user_key = msg.user_id
+        group_key = msg.group_id
+        message = [item['data']['text'] for item in msg.message if item['type'] == 'text']
+        at = [item['data']['qq'] for item in msg.message if item['type'] == 'at']
+        if group_key in self.group_uin and len(message) != 0:
+            print(f'[{user_key}]{message[0]}')
+            question = checklen(getText(self.chatHistory_group, "user", f'[{user_key}]{message[0]}'))
+            if msg.message[0]['type'] == 'at' and int(at[0]) == msg.self_id:
+                print(question)
+                output = get_answer(question, self.plugin_config)
+                getText(self.chatHistory_group, "assistant", output)
 
-            sentences = re.split('\$', output)  # 对回答进行切割
-            sentences = [s.strip() for s in sentences if s.strip()]  # 删除多余的空白句子
-            sentences_num = len(sentences)  # 查看句子数量
-            for i, output in enumerate(sentences, start=1):
-                await self.api.post_group_msg(group_id=self.group_uin,
-                                               text=output,
-                                               # image="https://gitee.com/li-yihao0328/nc_bot/raw/master/logo.png"
-                                               )  # 文件路径支持本地绝对路径，相对路径，网址以及base64
-                if i < sentences_num:  # 非最后一句话
-                    delay = random.uniform(1.0, 3.0)  # 生成随机延迟
-                    await asyncio.sleep(delay)  # 延迟后发送消息
+                sentences = re.split('\$', output)  # 对回答进行切割
+                sentences = [s.strip() for s in sentences if s.strip()]  # 删除多余的空白句子
+                sentences_num = len(sentences)  # 查看句子数量
+
+                for i, sentence in enumerate(sentences, start=1):
+                    is_last_sentence = (i == len(sentences))
+                    emotion_match = re.search(r'\[(.*?)\]', sentence)
+
+                    if is_last_sentence and emotion_match:
+                        print(f'检测到情绪标签: {sentence}')
+                        if random.random() < self.plugin_config['frequency']:
+                            print(f'发送对应情绪图片')
+                            emotion = emotion_match.group(1)
+                            try:
+                                await send_emojis(emotion, self.api, group_key, 'group')
+                            except Exception as e:
+                                print(f"发送表情包时出错: {e}")
+                        else:
+                            print(f'不发送对应情绪图片')
+                        continue
+
+                    await self.api.post_group_msg(group_id=group_key,text=sentence)
+
+                    if i < len(sentences):
+                        await asyncio.sleep(random.uniform(1, 3.0))
 
     @bot.private_event()
     async def on_private_message(self, msg: PrivateMessage):
@@ -74,7 +95,7 @@ class CharacterSimulationHandlerPlugin(BasePlugin):
         output = get_answer(question, self.plugin_config)
         getText(self.chatHistory_private, "assistant", output)
 
-        print("AI Raw Output:", output)
+        # print("AI Raw Output:", output)
         sentences = re.split('\$', output)
         sentences = [s.strip() for s in sentences if s.strip()]
 
@@ -96,6 +117,7 @@ class CharacterSimulationHandlerPlugin(BasePlugin):
                 continue
 
             await self.api.post_private_msg(user_id=self.root_id, text=sentence)
+
             if i < len(sentences):
                 await asyncio.sleep(random.uniform(1, 3.0))
 
