@@ -1,4 +1,13 @@
+#  账号设置
+group_id: []  # 生效的群id列表
+root_id:   # 管理员id
+reply_delay: 3.0  # 消息接收时间
+frequency: 1.0  # 设置表情包发送频率倍率
 
-group_id: ['']  # 生效的群id列表
-root_id: ''  # 管理员id
+#  api相关设置
+url: ""
 Authorization: ""  # 填写"Bearer 你的key_id"
+model: ""
+tools: [
+
+]

@@ -2,40 +2,45 @@ import requests
 import json
 import yaml
 
-def get_answer(message, Authorization):
+def get_answer(message, config):
+    authorization = config['Authorization']
+    url = config['url']
+    model = config['model']
+    tools = config['tools']
+    tool_choice = config['tool_choice']
+
     response = requests.post(
-        url="https://openrouter.ai/api/v1/chat/completions",
+        url=url,
         headers={
-            "Authorization": Authorization,
+            "Authorization": authorization,
             "Content-Type": "application/json",
             "HTTP-Referer": "<YOUR_SITE_URL>",  # Optional. Site URL for rankings on openrouter.ai.
             "X-Title": "<YOUR_SITE_NAME>",  # Optional. Site title for rankings on openrouter.ai.
         },
         data=json.dumps({
-            "model": "deepseek/deepseek-chat-v3-0324:free",
+            "model": model,
             "messages": message,
-        })
+            "tools": tools,
+            "tool_choice": tool_choice
+        }),
+        proxies={
+            "http": "http://127.0.0.1:7890",
+            "https": "http://127.0.0.1:7890",
+        }
     )
 
-    # for chunks in response.iter_lines():
-    #     # 打印返回的每帧内容
-    #     # print(chunks)
-    #     if (chunks and '[DONE]' not in str(chunks)):
-    #         data_org = chunks[6:]
-    #
-    #         chunk = json.loads(data_org)
-    #         text = chunk['choices'][0]['delta']
-    #
-    #         # 判断最终结果状态并输出
-    #         if ('content' in text and '' != text['content']):
-    #             content = text["content"]
-    #             if (True == isFirstContent):
-    #                 isFirstContent = False
-    #             print(content, end="")
-    #             full_response += content
-    print("Response:", response.json()['choices'][0]['message']['content'])
-    # print("Usage Stats:", response.json()['usage'])
-    return response.json()['choices'][0]['message']['content']
+    try:
+        data = response.json()
+    except Exception as e:
+        return f"解析 JSON 失败: {e}"
+
+    if "choices" not in data:
+        return f"请求返回异常：{data}"
+
+    content = data["choices"][0]["message"]["content"]
+    print(data)
+    # print("Answer:", content)
+    return content
 
 # 管理对话历史，按序编为列表
 def getText(text,role, content):
@@ -64,11 +69,10 @@ def checklen(text):
 if __name__ == "__main__":
     with open("./plugins/CharacterSimulationHandlerPlugin/config.yaml", "r", encoding="utf-8") as f:
         config = yaml.safe_load(f)
-        Authorization = config['Authorization']
         f.close()
     while 1:
         History=[]
         question = input("用户:")
         question = checklen(getText(History, "user", question))
-        output = get_answer(question, Authorization)
+        output = get_answer(question, config)
         getText(History, "assistant", output)
