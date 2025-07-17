@@ -6,27 +6,39 @@ def get_answer(message, config):
     authorization = config['Authorization']
     url = config['url']
     model = config['model']
-    tools = config['tools']
-    tool_choice = config['tool_choice']
+    is_tool = config['is_tool']
+    if is_tool:
+        tools = config['tools']
+        tool_choice = config['tool_choice']
+
+    headers = {
+        "Authorization": authorization,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "<YOUR_SITE_URL>",  # Optional. Site URL for rankings on openrouter.ai.
+        "X-Title": "<YOUR_SITE_NAME>",  # Optional. Site title for rankings on openrouter.ai.
+    }
+    if is_tool:
+        data = json.dumps({
+        "model": model,
+        "messages": message,
+        "tools": tools,
+        "tool_choice": tool_choice
+        })
+    else:
+        data = json.dumps({
+            "model": model,
+            "messages": message,
+        })
+    proxies={
+        "http": "http://127.0.0.1:7890",
+        "https": "http://127.0.0.1:7890",
+        }
 
     response = requests.post(
         url=url,
-        headers={
-            "Authorization": authorization,
-            "Content-Type": "application/json",
-            "HTTP-Referer": "<YOUR_SITE_URL>",  # Optional. Site URL for rankings on openrouter.ai.
-            "X-Title": "<YOUR_SITE_NAME>",  # Optional. Site title for rankings on openrouter.ai.
-        },
-        data=json.dumps({
-            "model": model,
-            "messages": message,
-            "tools": tools,
-            "tool_choice": tool_choice
-        }),
-        proxies={
-            "http": "http://127.0.0.1:7890",
-            "https": "http://127.0.0.1:7890",
-        }
+        headers=headers,
+        data=data,
+        proxies=proxies
     )
 
     try:

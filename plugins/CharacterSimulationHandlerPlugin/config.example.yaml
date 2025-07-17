@@ -8,6 +8,8 @@ frequency: 1.0  # 设置表情包发送频率倍率
 url: ""
 Authorization: ""  # 填写"Bearer 你的key_id"
 model: ""
+is_tool: False
+tool_choice: "auto"
 tools: [
 
 ]
