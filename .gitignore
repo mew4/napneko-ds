@@ -25,6 +25,7 @@ config.yaml
 
 # 日志文件
 **/logs/
+**/history.json
 
 # 如果有其他临时或发布产物
 dist/
