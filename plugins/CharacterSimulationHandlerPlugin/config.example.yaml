@@ -1,11 +1,11 @@
 #  账号设置
-group_id:   # 生效的群id列表
-root_id:  # 管理员id
+group_id:  [] # 生效的群id列表，如['14325','325']
+root_id:  # 管理员id，一般填你的大号id
 #boot_id:
 
 #  参数设置
-reply_delay: 3.0  # 消息接收时间
-frequency: 1.0  # 设置表情包发送频率倍率
+reply_delay: 3.0  # 消息接收时间，私人聊天时用户最后一次发言超过这个时间才会回复，以免遗漏信息
+frequency: 0.5  # 设置表情包发送频率倍率(0.5 = 50%)
 history_file_path: "./plugins/CharacterSimulationHandlerPlugin/history.json"
 proactive_chat:
   # 关键词列表，当消息包含这些词时，机器人会认为和自己相关
