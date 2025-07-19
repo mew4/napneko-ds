@@ -30,8 +30,8 @@ pip install -r requirements.txt
 运行launch.py
 
 ## 其他说明
-1.大模型api请自行上相应大模型官网购买或去其他[代理平台](https://www.bilibili.com/video/BV1S6KezyEMn/?spm_id_from=333.1391.0.0&vd_source=87ba1a1eb5e612f2b0e413f1519ae66a)白嫖。
-2.好友申请功能请修改.plugins/RequestHandlerPlugin/main.py中的“关注Mew喵，关注Mew谢谢喵。”字段，如果申请人的备注中含有该关键词，则好友申请自动通过。
-3.目前同个群聊识别不同用户是通过发给大模型的消息前附上id实现，如[114514]吃了吗，这种方式可能对大模型的逻辑判别能力有一定要求。
+1.大模型api请自行上相应大模型官网购买或去其他[代理平台](https://www.bilibili.com/video/BV1S6KezyEMn/?spm_id_from=333.1391.0.0&vd_source=87ba1a1eb5e612f2b0e413f1519ae66a)白嫖。  
+2.好友申请功能请修改.plugins/RequestHandlerPlugin/main.py中的“关注Mew喵，关注Mew谢谢喵。”字段，如果申请人的备注中含有该关键词，则好友申请自动通过。  
+3.目前同个群聊识别不同用户是通过发给大模型的消息前附上id实现，如[114514]吃了吗，这种方式可能对大模型的逻辑判别能力有一定要求。  
 4.大模型的输出内容不可控，本仓库仅作为学习、参考使用，大模型的所有言论本仓库概不负责。
 
