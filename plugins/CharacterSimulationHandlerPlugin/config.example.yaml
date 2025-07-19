@@ -1,15 +1,49 @@
 #  账号设置
-group_id: []  # 生效的群id列表
-root_id:   # 管理员id
+group_id:   # 生效的群id列表
+root_id:  # 管理员id
+#boot_id:
+
+#  参数设置
 reply_delay: 3.0  # 消息接收时间
 frequency: 1.0  # 设置表情包发送频率倍率
+history_file_path: "./plugins/CharacterSimulationHandlerPlugin/history.json"
+proactive_chat:
+  # 关键词列表，当消息包含这些词时，机器人会认为和自己相关
+  keywords: ["丛雨", "幼刀", "神刀", "丛雨丸"]
+  # 是否开启概率性主动搭话
+  enable_interjection: true
+  # 在N条群消息后，才开始有概率搭话（防止开场就插嘴）
+  message_threshold: 15
+  # 每次主动搭话后，至少要冷却多久（秒），才可能再次主动搭话（防止话痨）
+  cooldown_seconds: 1800 # 30分钟
+  # 满足以上条件后，实际触发搭话的概率 (0.15 = 15%)
+  interjection_probability: 0.15
 
 #  api相关设置
 url: ""
 Authorization: ""  # 填写"Bearer 你的key_id"
 model: ""
+
+#  function_calling与提示词存在冲突，暂时无法使用
 is_tool: False
 tool_choice: "auto"
 tools: [
-
+    {
+        "type": "function",
+        "function": {
+            "name": "send_emojis",
+            "description": "根据用户发送的消息内容，判断本次回复的情绪，并发送对应情绪的表情包",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "emotion": {
+                        "type": "string",
+                        "description": "代表情绪的字符串，必须是'angry', 'cute', 'happy', 'love', 'neutral', 'sad'中的一个",
+                        "enum": ['angry', 'cute', 'happy', 'love', 'neutral', 'sad']
+                    }
+                },
+                "required": ["emotion"],
+            },
+        },
+    },
 ]
