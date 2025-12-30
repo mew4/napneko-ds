@@ -28,7 +28,11 @@
 
 - [NcatBot 文档与安装指南](https://docs.ncatbot.xyz/guide/onestepi/)
 
-### 三、安装依赖环境
+### 三、复制插件文件
+
+下载本仓库中的 `plugins` 文件夹、`requirements.txt`和`launch.py` 文件，并复制到你的项目根目录下。
+
+### 四、安装依赖环境
 
 进入项目根目录，执行：
 
@@ -36,10 +40,6 @@
 pip install -r requirements.txt
 ```
 若下载过慢，可自行使用镜像源下载。
-
-### 四、复制插件文件
-
-下载本仓库中的 `plugins` 文件夹及 `launch.py` 文件，并复制到你的项目根目录下。
 
 ### 五、配置文件
 
